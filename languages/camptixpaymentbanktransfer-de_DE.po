@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CampTix Payment Banktransfer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-04-18 13:32+0200\n"
+"PO-Revision-Date: 2013-04-18 13:34+0100\n"
+"Last-Translator: Raphael Michel <mail@raphaelmichel.de>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: camptix-payment-banktransfer.php:24
+msgid "Bank Transfer"
+msgstr "Banküberweisung"
+
+#: camptix-payment-banktransfer.php:25
+msgid "Bank transfer checkout. Please fill in your bank details below, the user will be prompted to transfer money according to this details. <strong>Make sure to include the shortcode [bankdetails] in your e-mail templates!</strong>"
+msgstr "Banküberweisung. Bitte gib hier deine Bankverbindung (Inhaber, Kontonummer, BLZ, Bank) ein. Der Benutzer wird aufgefordert, sein Geld an dieses Konto zu überweisen. <strong>Binde umbedingt den Shortcode [bankdetails] in deine E-Mail-Templates ein!</strong>"
+
+#: camptix-payment-banktransfer.php:76
+#: camptix-payment-banktransfer.php:94
+msgid "Please transfer your money to the following bank account:"
+msgstr "Bitte überweise den Betrag an das folgende Bankkonto:"
+
+#: camptix-payment-banktransfer.php:78
+#, php-format
+msgid "Reference: %s"
+msgstr "Verwendungszweck: %s"
+
+#: camptix-payment-banktransfer.php:79
+#: camptix-payment-banktransfer.php:92
+#, php-format
+msgid "Amount: %s"
+msgstr "Betrag: %s"
+
+#: camptix-payment-banktransfer.php:91
+#, php-format
+msgid "Reference: <strong>%s</strong>"
+msgstr "Verwendungszweck: <strong>%s</strong>"
+
+#: camptix-payment-banktransfer.php:102
+msgid "Bank details"
+msgstr "Bankverbindung"
+
