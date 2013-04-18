@@ -29,7 +29,7 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
     public function payment_checkout( $payment_token ) {
 		global $camptix;
 		
-		$ident = uniqid();
+		$ident = uniqid(mt_rand(100,999));
 		
 		$order = $this->get_order( $payment_token );
 		
