@@ -1,0 +1,17 @@
+.tix-bank-import  {
+	border-collapse: collapse;
+}
+.tix-bank-import td {
+	border: 1px solid #ccc;
+}
+.tix-bank-import .raw td {
+	color: #ccc;
+}
+.tix-bank-import td.error {
+	color: #fff;
+	background: #c00;
+}
+.tix-bank-import td.success {
+	color: #fff;
+	background: #0c0;
+}

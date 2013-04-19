@@ -34,7 +34,7 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 		$order = $this->get_order( $payment_token );
 		
 		$attendees = get_posts( array(
-			'posts_per_page' => 1,
+			'posts_per_page' => 100,
 			'post_type' => 'tix_attendee',
 			'post_status' => 'any',
 			'meta_query' => array(
@@ -46,10 +46,11 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 				),
 			),
 		) );
-		$ID = $attendees[0]->ID;
+		foreach($attendees as $a) {
+			$ID = $a->ID;
+			update_post_meta( $ID, 'tix_banktransfer_token', $ident );
+		}
 		
-		update_post_meta( $ID, 'tix_banktransfer_token', $ident );
-
 		return $this->payment_result( $payment_token, $camptix::PAYMENT_STATUS_PENDING, $payment_data );
     }
 	
@@ -62,6 +63,38 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 		add_action( 'camptix_notices',  array($this, 'payment_pending_information'), 11 );
 		
 		add_action( 'camptix_init_email_templates_shortcodes', array( $this, 'init_email_templates_shortcodes' ), 9 );
+		
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+	}
+
+	function admin_enqueue_scripts() {
+		global $wp_query;
+
+		if ( ! $wp_query->query_vars ) { // only on singular admin pages
+			if ( 'tix_ticket' == get_post_type() || 'tix_coupon' == get_post_type() ) {
+			}
+		}
+
+		// Let's see whether to include admin.css and admin.js
+		if ( is_admin() ) {
+			$post_types = array( 'tix_ticket', 'tix_coupon', 'tix_email', 'tix_attendee' );
+			$pages = array( 'camptix_options', 'camptix_tools' );
+			if (
+				( in_array( get_post_type(), $post_types ) ) ||
+				( isset( $_REQUEST['post_type'] ) && in_array( $_REQUEST['post_type'], $post_types ) ) ||
+				( isset( $_REQUEST['page'] ) && in_array( $_REQUEST['page'], $pages ) )
+			) {
+				wp_enqueue_style( 'camptix-payment-banktransfer-admin', plugins_url( '/admin.css', __FILE__ ), array(), $this->css_version );
+			}
+		}
+
+		$screen = get_current_screen();
+		if ( 'tix_ticket_page_camptix_options' == $screen->id ) {
+			wp_enqueue_script( 'jquery-ui-datepicker' );
+			wp_enqueue_style( 'jquery-ui', plugins_url( '/external/jquery-ui.css', __FILE__ ), array(), $this->version );
+		}
 	}
 	
 	function init_email_templates_shortcodes () {
@@ -143,6 +176,195 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 			$output['bankdetails'] = $input['bankdetails'];
 
 		return $output;
+	}
+	
+	function admin_menu() {
+		global $camptix;
+		
+		add_submenu_page( 'edit.php?post_type=tix_ticket', __( 'Bank Transfer', 'camptixpaymentbanktransfer' ), __( 'Bank Transfer', 'camptixpaymentbanktransfer' ), $camptix->caps['manage_attendees'], 'camptix_banktransfer', array( $this, 'menu_tools' ) );
+	}
+	
+	function markpayed($payment_token) {
+		global $camptix;
+		$attendees = get_posts( array(
+			'posts_per_page' => 100,
+			'post_type' => 'tix_attendee',
+			'post_status' => array( 'pending' ),
+			'meta_query' => array(
+				array(
+					'key' => 'tix_payment_token',
+					'value' => mysql_real_escape_string($payment_token),
+					'compare' => '=',
+					'type' => 'CHAR',
+				),
+			),
+			'cache_results' => false,
+		) );
+		foreach ($attendees as $attendee) {
+			$attendee->post_status = 'publish';
+			wp_update_post( $attendee );
+			$camptix->log( sprintf( 'Attendee status has been changed to %s', $attendee->post_status ), $attendee->ID );
+		}
+		$camptix->email_tickets($payment_token, 'pending', 'publish');
+	}
+	
+	function menu_tools() {
+		global $camptix;
+		
+		if(isset($_POST['reference'])) {
+			if ( !wp_verify_nonce($_POST['single_reference_nonce'],'camptix_banktransfer') ) {
+				print 'Sorry, your nonce did not verify.';
+				exit;
+			}
+			else {
+				$attendees = get_posts( array(
+					'posts_per_page' => 1,
+					'post_type' => 'tix_attendee',
+					'post_status' => array( 'pending' ),
+					'meta_query' => array(
+						array(
+							'key' => 'tix_banktransfer_token',
+							'value' => mysql_real_escape_string($_POST['reference']),
+							'compare' => '=',
+							'type' => 'CHAR',
+						),
+					),
+					'cache_results' => false,
+				) );
+				if(count($attendees) > 0){
+					$pt = get_post_meta( $attendees[0]->ID, 'tix_payment_token', true );
+					$pf = floatval (get_post_meta( $attendees[0]->ID, 'tix_order_total', true ));
+					$price = $camptix->append_currency( $pf, false );
+					if ( $pf !== floatval($_POST['amount']) ) {
+						add_settings_error(
+							'',
+							'tixBanktransferFailed',
+							sprintf( __( 'Value %s does not match order total of %s!', 'camptixpaymentbanktransfer' ), floatval($_POST['amount']), $price),
+							'error'
+						);
+					} else {
+						$this->markpayed($pt);
+						add_settings_error(
+							'',
+							'tixBanktransferSuccess',
+							sprintf( __( '<strong>%d</strong> Tickets for an order total of <strong>%s</strong> marked as payed.', 'camptixpaymentbanktransfer' ), count($attendees), $price),
+							'updated'
+						);
+					}
+				} else {
+					add_settings_error(
+						'',
+						'tixBanktransferNotFound',
+						__( 'Payment reference not found or already marked as payed.', 'camptixpaymentbanktransfer' ),
+						'error'
+					);
+				}
+			}
+		}
+
+		?>
+		<div class="wrap">
+			<?php screen_icon( 'tools' ); ?>
+			<h2><?php _e( 'Bank Transfer payment status import', 'camptixpaymentbanktransfer' ); ?></h2>
+			<?php settings_errors(); ?>
+			<p><?php _e( 'This page is a tool to mark payments which you recieved via wire transfer as payed. You can either enter a single payment reference or import a whole CSV from your bank. Actions on this page can take long because many emails might be to send...', 'camptixpaymentbanktransfer' ); ?></p>
+			<h3><?php _e( 'Single reference', 'camptixpaymentbanktransfer' ); ?></h3>
+			<form action="" method="post">
+				<input type="text" name="reference" placeholder="<?php _e( 'Payment reference key', 'camptixpaymentbanktransfer' ) ?>" value="" />
+				<input type="text" name="amount" placeholder="<?php _e( 'Amount (e.g. 100.5) in your currency', 'camptixpaymentbanktransfer' ) ?>" value="" />
+				<input type="submit" value="<?php _e( 'Mark as payed', 'camptixpaymentbanktransfer' ); ?>" />
+				<?php wp_nonce_field('camptix_banktransfer','single_reference_nonce'); ?>
+			</form>
+			<h3><?php _e( 'CSV import', 'camptixpaymentbanktransfer' ); ?></h3>
+			<p><?php _e( 'Attention: This is very beta. If you\'re not the one I made this for, better don\'t use in a real environment. Also, this takes LONG! Make sure your server allows PHP scripts to run long. <strong>AND DO BACKUPS!</strong>', 'camptixpaymentbanktransfer' ); ?></p>
+			<form action="" method="post" enctype="multipart/form-data">
+				<input type="file" name="csv" value="" />
+				<input type="submit" value="<?php _e( 'Mark as payed', 'camptixpaymentbanktransfer' ); ?>" />
+				<?php wp_nonce_field('camptix_banktransfer','csv_reference_nonce'); ?>
+			</form>
+			<?php
+			if(isset($_FILES['csv'])) {
+				?>
+				<h3><?php _e( 'CSV import results', 'camptixpaymentbanktransfer' ); ?></h3>
+				<?php
+				if ( !wp_verify_nonce($_POST['csv_reference_nonce'],'camptix_banktransfer') ) {
+					print 'Sorry, your nonce did not verify.';
+					exit;
+				} else {
+					$file = $_FILES['csv']['tmp_name'];
+					$handle = fopen($file,"r");
+					echo '<table class="tix-bank-import">';
+					while ( $row = fgets ( $handle ) ) {
+						$row = utf8_encode(trim($row));
+						if ( $row == "" ) continue;
+						$money = null;
+						$res_class = '';
+						$srow = '<td colspan="2"></td>';
+						
+						if ( preg_match ( '/[^a-zA-Z0-9]([abcdefABCDEF0-9]{14,17})[^a-zA-Z0-9]/', $row, $sub ) ) {
+							$html_reference = $reference = $sub[1];
+							if ( preg_match ( '/["\';,]([0-9]+[.,]?[0-9]*)["\';,]/', $row, $subm ) ) {
+								$money = floatval( str_replace( ",", ".", $subm[1] ) );
+								$attendees = get_posts( array(
+									'posts_per_page' => 1,
+									'post_type' => 'tix_attendee',
+									'post_status' => array( 'pending', 'publish' ),
+									'meta_query' => array(
+										array(
+											'key' => 'tix_banktransfer_token',
+											'value' => mysql_real_escape_string($reference),
+											'compare' => '=',
+											'type' => 'CHAR',
+										),
+									),
+									'cache_results' => false,
+								) );
+								if ( count( $attendees ) > 0 ) {
+									if( $attendees[0]->post_status == "publish" ) {
+										$res_text = __( 'Already payed', 'camptixpaymentbanktransfer' );
+										$res_class = "payed";
+									} else {
+										$pf = floatval ( get_post_meta( $attendees[0]->ID, 'tix_order_total', true ) );
+										$price = $camptix->append_currency( $pf, false );
+										if($pf == $money) {
+											$pt = get_post_meta( $attendees[0]->ID, 'tix_payment_token', true );
+											$this->markpayed($pt);
+											$res_text = sprintf ( __( 'Marked as payed.', 'camptixpaymentbanktransfer' ), $price );
+											$res_class = "success";
+										} else {
+											$res_text = sprintf ( __( 'Wrong amount of money. Order total is %s!', 'camptixpaymentbanktransfer' ), $price );
+											$res_class = "error";
+										}
+									}
+								} else {
+									$res_text = __( 'Invalid payment reference', 'camptixpaymentbanktransfer' );
+									$res_class = "error";
+								}
+							} else {
+								$res_text = __( 'No money amount found', 'camptixpaymentbanktransfer' );
+								$res_class = "error";
+							}
+							$srow = '<td>'.$html_reference.'</td>';
+							if($money)
+								$srow .= '<td>' . $camptix->append_currency( $money ) . '</td>';
+						} else {
+							$res_text = __( 'No payment reference found', 'camptixpaymentbanktransfer' );
+						}
+						
+						echo '<tr class="raw">';
+						echo '<td colspan="2">'.$row.'</td>';
+						echo '<td rowspan="2" class="'.$res_class.'">'.$res_text.'</td>';
+						echo '</tr>';
+						echo '<tr>';
+						echo $srow;
+						echo '</tr>';
+					}
+					echo '</table>';
+				}
+			}
+			?>
+		</div>
+		<?php
 	}
 }
 
