@@ -218,7 +218,7 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 			}
 			else {
 				$attendees = get_posts( array(
-					'posts_per_page' => 1,
+					'posts_per_page' => 100,
 					'post_type' => 'tix_attendee',
 					'post_status' => array( 'pending' ),
 					'meta_query' => array(
