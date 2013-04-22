@@ -1,7 +1,7 @@
 <?php // encoding: utf-8
 /*
 Plugin Name: CampTix Payment Method: Bank transfer
-Plugin Description: Extends CampTix with support for Bank transfer
+Description: Extends CampTix with support for Bank transfer
 Version: 1.0.0
 Author: Raphael Michel
 */
