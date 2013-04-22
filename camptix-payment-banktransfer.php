@@ -232,6 +232,7 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 					'cache_results' => false,
 				) );
 				if(count($attendees) > 0){
+					$_POST['amount'] = str_replace(',', '.', $_POST['amount']);
 					$pt = get_post_meta( $attendees[0]->ID, 'tix_payment_token', true );
 					$pf = floatval (get_post_meta( $attendees[0]->ID, 'tix_order_total', true ));
 					$price = $camptix->append_currency( $pf, false );
