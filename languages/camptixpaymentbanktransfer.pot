@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-19 12:42+0200\n"
+"POT-Creation-Date: 2013-05-04 20:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: camptix-payment-banktransfer.php:24 camptix-payment-banktransfer.php:184
+#: camptix-payment-banktransfer.php:200
 msgid "Bank Transfer"
 msgstr ""
 
@@ -31,75 +32,80 @@ msgstr ""
 
 #: camptix-payment-banktransfer.php:76 camptix-payment-banktransfer.php:94
 #: camptix-payment-banktransfer.php:109 camptix-payment-banktransfer.php:159
+#: camptix-payment-banktransfer.php:111 camptix-payment-banktransfer.php:169
 msgid "Please transfer your money to the following bank account:"
 msgstr ""
 
 #: camptix-payment-banktransfer.php:78 camptix-payment-banktransfer.php:111
+#: camptix-payment-banktransfer.php:113
 #, php-format
 msgid "Reference: %s"
 msgstr ""
 
 #: camptix-payment-banktransfer.php:79 camptix-payment-banktransfer.php:92
 #: camptix-payment-banktransfer.php:112 camptix-payment-banktransfer.php:156
+#: camptix-payment-banktransfer.php:114 camptix-payment-banktransfer.php:165
 #, php-format
 msgid "Amount: %s"
 msgstr ""
 
 #: camptix-payment-banktransfer.php:91 camptix-payment-banktransfer.php:155
+#: camptix-payment-banktransfer.php:164
 #, php-format
 msgid "Reference: <strong>%s</strong>"
 msgstr ""
 
 #: camptix-payment-banktransfer.php:102 camptix-payment-banktransfer.php:168
+#: camptix-payment-banktransfer.php:178
 msgid "Bank details"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:242
+#: camptix-payment-banktransfer.php:242 camptix-payment-banktransfer.php:259
 #, php-format
 msgid "Value %s does not match order total of %s!"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:250
+#: camptix-payment-banktransfer.php:250 camptix-payment-banktransfer.php:267
 #, php-format
 msgid ""
 "<strong>%d</strong> Tickets for an order total of <strong>%s</strong> marked "
 "as payed."
 msgstr ""
 
-#: camptix-payment-banktransfer.php:258
+#: camptix-payment-banktransfer.php:258 camptix-payment-banktransfer.php:275
 msgid "Payment reference not found or already marked as payed."
 msgstr ""
 
-#: camptix-payment-banktransfer.php:324
+#: camptix-payment-banktransfer.php:324 camptix-payment-banktransfer.php:341
 msgid "Already payed"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:332
+#: camptix-payment-banktransfer.php:332 camptix-payment-banktransfer.php:349
 msgid "Marked as payed."
 msgstr ""
 
-#: camptix-payment-banktransfer.php:335
+#: camptix-payment-banktransfer.php:335 camptix-payment-banktransfer.php:352
 #, php-format
 msgid "Wrong amount of money. Order total is %s!"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:340
+#: camptix-payment-banktransfer.php:340 camptix-payment-banktransfer.php:357
 msgid "Invalid payment reference"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:344
+#: camptix-payment-banktransfer.php:344 camptix-payment-banktransfer.php:361
 msgid "No money amount found"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:351
+#: camptix-payment-banktransfer.php:351 camptix-payment-banktransfer.php:368
 msgid "No payment reference found"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:268
+#: camptix-payment-banktransfer.php:268 camptix-payment-banktransfer.php:285
 msgid "Bank Transfer payment status import"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:270
+#: camptix-payment-banktransfer.php:270 camptix-payment-banktransfer.php:287
 msgid ""
 "This page is a tool to mark payments which you recieved via wire transfer as "
 "payed. You can either enter a single payment reference or import a whole CSV "
@@ -107,33 +113,43 @@ msgid ""
 "be to send..."
 msgstr ""
 
-#: camptix-payment-banktransfer.php:271
+#: camptix-payment-banktransfer.php:271 camptix-payment-banktransfer.php:288
 msgid "Single reference"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:273
+#: camptix-payment-banktransfer.php:273 camptix-payment-banktransfer.php:290
 msgid "Payment reference key"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:274
+#: camptix-payment-banktransfer.php:274 camptix-payment-banktransfer.php:291
 msgid "Amount (e.g. 100.5) in your currency"
 msgstr ""
 
 #: camptix-payment-banktransfer.php:275 camptix-payment-banktransfer.php:282
+#: camptix-payment-banktransfer.php:292 camptix-payment-banktransfer.php:299
 msgid "Mark as payed"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:278
+#: camptix-payment-banktransfer.php:278 camptix-payment-banktransfer.php:295
 msgid "CSV import"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:279
+#: camptix-payment-banktransfer.php:279 camptix-payment-banktransfer.php:296
 msgid ""
 "Attention: This is very beta. If you're not the one I made this for, better "
 "don't use in a real environment. Also, this takes LONG! Make sure your "
 "server allows PHP scripts to run long. <strong>AND DO BACKUPS!</strong>"
 msgstr ""
 
-#: camptix-payment-banktransfer.php:288
+#: camptix-payment-banktransfer.php:288 camptix-payment-banktransfer.php:305
 msgid "CSV import results"
+msgstr ""
+
+#: camptix-payment-banktransfer.php:115 camptix-payment-banktransfer.php:166
+#, php-format
+msgid "Please pay before: %s"
+msgstr ""
+
+#: camptix-payment-banktransfer.php:180
+msgid "Payment term duration (days)"
 msgstr ""

@@ -58,6 +58,7 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 	function camptix_init() {
 		$this->options = array_merge( array(
 			'bankdetails' => '',
+			'term_duration' => '14'
 		), $this->get_payment_options() );
 		
 		add_action( 'camptix_notices',  array($this, 'payment_pending_information'), 11 );
@@ -106,12 +107,21 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 		
 		$price = $camptix->append_currency( get_post_meta( $camptix->tmp('attendee_id'), 'tix_order_total', true ), false );
 		$reference = get_post_meta( $camptix->tmp('attendee_id'), 'tix_banktransfer_token', true );
+		$attendee = get_post($camptix->tmp('attendee_id'));
 		$bankdetails = __( "Please transfer your money to the following bank account:", 'camptixpaymentbanktransfer' )."\n";
 		$bankdetails .= $this->options['bankdetails'];
 		$bankdetails .= sprintf( "\n" . __( "Reference: %s", 'camptixpaymentbanktransfer' ), $reference);
 		$bankdetails .= sprintf( "\n" . __( "Amount: %s", 'camptixpaymentbanktransfer' ),  $price );
+		if($this->options['term_duration'])
+			$bankdetails .= sprintf( "\n" . __( "Please pay before: %s", 'camptixpaymentbanktransfer' ),  $this->printable_payment_date($attendee->post_date) );
 		
 		return $bankdetails;
+	}
+	
+	function printable_payment_date($purchasedate) {
+		$purchasetime = strtotime($purchasedate);
+		$endofterm = $purchasetime + ($this->options['term_duration'] * 3600 * 24);
+		return date_i18n(get_option('date_format'), $endofterm);
 	}
 	
 	function payment_pending_information() {
@@ -154,6 +164,8 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 			$bankdetails = nl2br($this->options['bankdetails']);
 			$bankdetails .= sprintf( "<br />" . __( "Reference: <strong>%s</strong>", 'camptixpaymentbanktransfer' ), get_post_meta( $attendee_id, 'tix_banktransfer_token', true ));
 			$bankdetails .= sprintf( "<br />" . __( "Amount: %s", 'camptixpaymentbanktransfer' ),  $price );
+			if($this->options['term_duration'])
+				$bankdetails .= sprintf( "<br />" . __( "Please pay before: %s", 'camptixpaymentbanktransfer' ),  $this->printable_payment_date($attendee->post_date) );
 			
 			echo '<p class="tix-notice">';
 			echo  __( "Please transfer your money to the following bank account:", 'camptixpaymentbanktransfer' ) . "<br />" . $bankdetails;
@@ -166,6 +178,9 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 		global $camptix;
 		// You can use the helper function along with the helper callback function
 		$this->add_settings_field_helper( 'bankdetails', __('Bank details', 'camptixpaymentbanktransfer'), array( $camptix, 'field_textarea' ) );
+		
+		$this->add_settings_field_helper( 'term_duration', __('Payment term duration (days)', 'camptixpaymentbanktransfer'), array( $camptix, 'field_text' ) );
+		
 	}
 
 	// Called by CampTix when your payment settings are being saved
@@ -174,6 +189,9 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 
 		if ( isset( $input['bankdetails'] ) )
 			$output['bankdetails'] = $input['bankdetails'];
+
+		if ( isset( $input['term_duration'] ) )
+			$output['term_duration'] = $input['term_duration'];
 
 		return $output;
 	}
