@@ -58,7 +58,8 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 	function camptix_init() {
 		$this->options = array_merge( array(
 			'bankdetails' => '',
-			'term_duration' => '14'
+			'term_duration' => '14',
+			'term_lasttime' => '2099-12-31'
 		), $this->get_payment_options() );
 		
 		add_action( 'camptix_notices',  array($this, 'payment_pending_information'), 11 );
@@ -120,7 +121,9 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 	
 	function printable_payment_date($purchasedate) {
 		$purchasetime = strtotime($purchasedate);
+		$lasttime = strtotime($this->options['term_last']);
 		$endofterm = $purchasetime + ($this->options['term_duration'] * 3600 * 24);
+		if($endofterm > $lasttime) $endofterm = $lasttime;
 		return date_i18n(get_option('date_format'), $endofterm);
 	}
 	
@@ -181,6 +184,8 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 		
 		$this->add_settings_field_helper( 'term_duration', __('Payment term duration (days)', 'camptixpaymentbanktransfer'), array( $camptix, 'field_text' ) );
 		
+		$this->add_settings_field_helper( 'term_lasttime', __('Last date for payment', 'camptixpaymentbanktransfer'), array( $camptix, 'field_text' ) );
+		
 	}
 
 	// Called by CampTix when your payment settings are being saved
@@ -192,6 +197,9 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 
 		if ( isset( $input['term_duration'] ) )
 			$output['term_duration'] = $input['term_duration'];
+
+		if ( isset( $input['term_lasttime'] ) )
+			$output['term_lasttime'] = $input['term_lasttime'];
 
 		return $output;
 	}
