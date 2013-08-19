@@ -121,7 +121,7 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 	
 	function printable_payment_date($purchasedate) {
 		$purchasetime = strtotime($purchasedate);
-		$lasttime = strtotime($this->options['term_last']);
+		$lasttime = strtotime($this->options['term_lasttime']);
 		$endofterm = $purchasetime + ($this->options['term_duration'] * 3600 * 24);
 		if($endofterm > $lasttime) $endofterm = $lasttime;
 		return date_i18n(get_option('date_format'), $endofterm);
