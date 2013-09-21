@@ -51,7 +51,7 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 			update_post_meta( $ID, 'tix_banktransfer_token', $ident );
 		}
 		
-		return $this->payment_result( $payment_token, $camptix::PAYMENT_STATUS_PENDING, $payment_data );
+		return $this->payment_result( $payment_token, CampTix_Plugin::PAYMENT_STATUS_PENDING, $payment_data );
     }
 	
 	// Fired when CampTix initialized, you don't have to call this
