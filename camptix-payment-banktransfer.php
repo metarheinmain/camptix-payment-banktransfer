@@ -6,7 +6,7 @@ Version: 1.0.0
 Author: Raphael Michel
 */
 
-require_once __DIR__.'/../camptix/camptix.php';
+require_once dirname( __FILE__ ) . '/../camptix/camptix.php';
 
 if(!class_exists('CampTix_Payment_Method'))
 	die('Plugin "CampTix Payment Method: Bank transfer" needs CampTix to be installed.');
