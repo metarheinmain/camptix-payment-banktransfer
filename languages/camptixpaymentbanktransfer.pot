@@ -69,19 +69,19 @@ msgstr ""
 #, php-format
 msgid ""
 "<strong>%d</strong> Tickets for an order total of <strong>%s</strong> marked "
-"as payed."
+"as paid."
 msgstr ""
 
 #: camptix-payment-banktransfer.php:258 camptix-payment-banktransfer.php:275
-msgid "Payment reference not found or already marked as payed."
+msgid "Payment reference not found or already marked as paid."
 msgstr ""
 
 #: camptix-payment-banktransfer.php:324 camptix-payment-banktransfer.php:341
-msgid "Already payed"
+msgid "Already paid"
 msgstr ""
 
 #: camptix-payment-banktransfer.php:332 camptix-payment-banktransfer.php:349
-msgid "Marked as payed."
+msgid "Marked as paid."
 msgstr ""
 
 #: camptix-payment-banktransfer.php:335 camptix-payment-banktransfer.php:352
@@ -108,7 +108,7 @@ msgstr ""
 #: camptix-payment-banktransfer.php:270 camptix-payment-banktransfer.php:287
 msgid ""
 "This page is a tool to mark payments which you recieved via wire transfer as "
-"payed. You can either enter a single payment reference or import a whole CSV "
+"paid. You can either enter a single payment reference or import a whole CSV "
 "from your bank. Actions on this page can take long because many emails might "
 "be to send..."
 msgstr ""
@@ -127,7 +127,7 @@ msgstr ""
 
 #: camptix-payment-banktransfer.php:275 camptix-payment-banktransfer.php:282
 #: camptix-payment-banktransfer.php:292 camptix-payment-banktransfer.php:299
-msgid "Mark as payed"
+msgid "Mark as paid"
 msgstr ""
 
 #: camptix-payment-banktransfer.php:278 camptix-payment-banktransfer.php:295
