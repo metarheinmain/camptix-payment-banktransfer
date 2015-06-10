@@ -219,7 +219,7 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 			'meta_query' => array(
 				array(
 					'key' => 'tix_payment_token',
-					'value' => mysql_real_escape_string($payment_token),
+					'value' => esc_sql($payment_token),
 					'compare' => '=',
 					'type' => 'CHAR',
 				),
@@ -250,7 +250,7 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 					'meta_query' => array(
 						array(
 							'key' => 'tix_banktransfer_token',
-							'value' => mysql_real_escape_string($_POST['reference']),
+							'value' => esc_sql($_POST['reference']),
 							'compare' => '=',
 							'type' => 'CHAR',
 						),
@@ -339,7 +339,7 @@ class CampTix_Payment_Method_Banktransfer extends CampTix_Payment_Method {
 									'meta_query' => array(
 										array(
 											'key' => 'tix_banktransfer_token',
-											'value' => mysql_real_escape_string($reference),
+											'value' => esc_sql($reference),
 											'compare' => '=',
 											'type' => 'CHAR',
 										),
