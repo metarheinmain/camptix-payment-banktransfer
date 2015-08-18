@@ -3,6 +3,8 @@ CampTix Payment Method: Bank Transfer
 
 Simple WordPress plugin which adds bank transfer support to CampTix
 
+Please not that this plugin is *not actively maintained*. It has been used in production and it worked for us, but we do not update it as we do not use camptix any more in favour of [pretix](http://pretix.eu/).
+
 Installation
 ------------
 * Install and set up CampTix.
